@@ -7,7 +7,9 @@ def task_one():
     requests.post('http://challenge.code2040.org/api/register', data = {'token':token, 'github':github})
 
 def task_two():
-    return
+    s = requests.post('http://challenge.code2040.org/api/reverse', data = {'token': token}).text
+    string = s[::-1]
+    requests.post('http://challenge.code2040.org/api/reverse/validate', data = {'token': token, 'string':string})
 
 def task_three():
     return
