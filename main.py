@@ -1,4 +1,5 @@
 import requests
+import json
 
 token = "ed743104e919fa4a0ba48d0390cc5ee4"
 github = 'https://github.com/svcastaneda/code2040-application'
@@ -12,7 +13,13 @@ def task_two():
     requests.post('http://challenge.code2040.org/api/reverse/validate', data = {'token': token, 'string':string})
 
 def task_three():
-    return
+    d = requests.post('http://challenge.code2040.org/api/haystack', data = {'token':token}).text
+    d = json.loads(d)
+    haystack = d["haystack"]
+    needle = d["needle"]
+    index = haystack.index(needle)
+
+    requests.post('http://challenge.code2040.org/api/haystack/validate', data = {'token':token, 'needle':index})
 
 def task_four():
     return
