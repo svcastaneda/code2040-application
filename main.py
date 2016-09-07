@@ -10,7 +10,8 @@ def task_one():
 def task_two():
     d = post_token('http://challenge.code2040.org/api/reverse').text
     string = d[::-1]
-    requests.post('http://challenge.code2040.org/api/reverse/validate', data = {'token': token, 'string':string})
+
+    validate_answer("reverse", 'string', string)
 
 def task_three():
     d = post_token('http://challenge.code2040.org/api/haystack').json()
@@ -18,23 +19,21 @@ def task_three():
     needle = d["needle"]
     index = haystack.index(needle)
 
-    requests.post('http://challenge.code2040.org/api/haystack/validate', data = {'token':token, 'needle':index})
+    validate_answer("haystack", 'needle', index)
 
 def task_four():
     d = post_token('http://challenge.code2040.org/api/prefix').json()
-
-    prefix = d["prefix"].lower()
+    prefix = d["prefix"]
     given_array = d["array"]
-
     array = []
 
     for item in given_array:
-        if not item.lower().startswith(prefix):
-            array.append(item)
+        if not item.startswith(prefix):
+            array.append(str(item))
 
+    url = "http://challenge.code2040.org/api/prefix/validate"
     data = {'token':token, 'array':array}
-
-    requests.post('http://challenge.code2040.org/api/prefix/validate', data = json.dumps(data))
+    requests.post(url, json = data)
 
 from datetime import datetime, timedelta
 def task_five():
@@ -46,10 +45,15 @@ def task_five():
     new_time = parsed_time + timedelta(seconds=interval)
     new_formatted_time = new_time.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-    requests.post('http://challenge.code2040.org/api/dating/validate', data = {'token':token, 'datestamp':new_formatted_time})
+    validate_answer("dating", 'datestamp', new_formatted_time)
 
 def post_token(url):
     return requests.post(url, data = {'token':token})
+
+def validate_answer(url_keyword, key, answer):
+    url = "http://challenge.code2040.org/api/%s/validate" % url_keyword
+    data = {'token':token, key:answer}
+    requests.post(url, data = data)
 
 task_one()
 task_two()
